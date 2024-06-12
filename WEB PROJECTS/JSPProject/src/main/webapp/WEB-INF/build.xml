@@ -1,0 +1,45 @@
+<project name="JSPProject" default="deploy" basedir=".">
+    <!-- Set global properties for this build -->
+    <property name="src.dir" value="src"/>
+    <property name="web.dir" value="WebContent"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+
+    <!-- Initialize directories -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <!-- Clean the build directory -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <!-- Compile Java sources -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.dir}/classes">
+            <include name="**/*.java"/>
+        </javac>
+    </target>
+
+    <!-- Copy web content to build directory -->
+    <target name="copy-web-content" depends="compile">
+        <copy todir="${build.dir}">
+            <fileset dir="${web.dir}"/>
+        </copy>
+    </target>
+
+    <!-- Create a WAR file -->
+    <target name="war" depends="copy-web-content">
+        <war destfile="${dist.dir}/JSPProject.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <fileset dir="${build.dir}"/>
+        </war>
+    </target>
+
+    <!-- Deploy the WAR file to a local server (e.g., Tomcat) -->
+    <target name="deploy" depends="war">
+        <copy file="${dist.dir}/JSPProject.war" todir="path/to/your/tomcat/webapps"/>
+    </target>
+</project>
